@@ -223,6 +223,7 @@ if __name__ == "__main__":
         sys.executable, "-m", "PyInstaller",
         "--onefile",
         "--noconsole",
+        "--icon", "electron/icon.ico",
         "--name", "AddyWealth-App",
         f"--add-data", f"{source_folder};app_root",
         "--clean",
