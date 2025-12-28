@@ -1,0 +1,47 @@
+{
+    "name": "solowealth",
+    "version": "1.0.0",
+    "description": "Local-only Personal Finance Tracker - Zero external APIs",
+    "main": "electron/main.js",
+    "scripts": {
+        "start": "electron .",
+        "build": "electron-builder",
+        "build:win": "electron-packager . SoloWealth --platform=win32 --arch=x64 --out=electron-dist --overwrite --ignore=^/dist --ignore=^/build --ignore=^/.git"
+    },
+    "author": "SoloWealth",
+    "license": "MIT",
+    "devDependencies": {
+        "electron": "^28.0.0",
+        "electron-builder": "^24.9.1",
+        "electron-packager": "^17.1.2"
+    },
+    "build": {
+        "appId": "com.solowealth.app",
+        "productName": "SoloWealth",
+        "directories": {
+            "output": "electron-dist"
+        },
+        "files": [
+            "electron/**/*",
+            "index.html",
+            "main.py",
+            "models.py"
+        ],
+        "extraResources": [
+            {
+                "from": "electron/resources",
+                "to": "resources",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ],
+        "win": {
+            "target": "dir"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        }
+    }
+}

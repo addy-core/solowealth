@@ -1,0 +1,9 @@
+*/node_modules/*
+__pycache__
+.env
+build/
+dist/
+finance.db
+electron-dist/
+*.exe
+*node_modules/*

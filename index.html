@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoloWealth - Premium Finance Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-light: #fafafa;
+            --bg-white: #ffffff;
+            --bg-gray: #f5f5f5;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.9);
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-muted: #9ca3af;
+            --accent-orange: #ff6b35;
+            --accent-orange-light: #ff8c61;
+            --accent-orange-dark: #e5522d;
+            --accent-orange-pale: #fff5f2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(255, 107, 53, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 107, 53, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .glass-strong {
+            background: var(--bg-white);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            padding: 32px 20px;
+            background: var(--bg-white);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-right: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-item {
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .nav-item:hover {
+            background: var(--glass-hover);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--accent-orange-pale);
+            color: var(--accent-orange);
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.15);
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 1600px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .currency-selector {
+            padding: 12px 20px;
+            background: var(--bg-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            outline: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .currency-selector:hover {
+            background: var(--accent-orange-pale);
+            border-color: var(--accent-orange);
+        }
+
+        .month-filter {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .month-filter select {
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            padding: 28px;
+            background: var(--bg-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-orange);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-orange-light));
+        }
+
+        .stat-card.success::before {
+            background: linear-gradient(90deg, var(--success), #34d399);
+        }
+
+        .stat-card.warning::before {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+
+        .stat-card.danger::before {
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            background: var(--accent-orange-pale);
+        }
+
+        .stat-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--accent-orange);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .stat-value.success {
+            color: var(--success);
+        }
+
+        .stat-value.warning {
+            color: var(--warning);
+        }
+
+        .stat-value.danger {
+            color: var(--danger);
+        }
+
+        .card {
+            padding: 32px;
+            background: var(--bg-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-light));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-white);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-orange-pale);
+            border-color: var(--accent-orange);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            background: var(--bg-gray);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        tbody tr:hover td {
+            background: var(--accent-orange-pale);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-gray);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary) !important;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--accent-orange);
+            background: var(--bg-white);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-select option {
+            background: var(--bg-white);
+            color: var(--text-primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 36px;
+            width: 100%;
+            max-width: 540px;
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            color: var(--text-primary);
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-Rich {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-Neutral {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status-Poor {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .version {
+            margin-top: auto;
+            padding-top: 32px;
+            color: var(--text-muted);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-orange-pale);
+        }
+
+        .category-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent-orange);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-orange);
+            cursor: pointer;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: var(--bg-white);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            min-width: 300px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.toast-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.toast-error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.toast-info {
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .toast-error .toast-icon {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .toast-info .toast-icon {
+            background: var(--accent-orange-pale);
+            color: var(--accent-orange);
+        }
+
+        .toast-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: var(--text-primary);
+        }
+
+        .toast-close svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i data-lucide="wallet"></i>
+            SoloWealth
+        </div>
+        <div class="nav-item active" data-page="dashboard">
+            <i data-lucide="layout-dashboard"></i> Dashboard
+        </div>
+        <div class="nav-item" data-page="expenses">
+            <i data-lucide="receipt"></i> Expenses
+        </div>
+        <div class="nav-item" data-page="investments">
+            <i data-lucide="trending-up"></i> Investments
+        </div>
+        <div class="nav-item" data-page="debts">
+            <i data-lucide="landmark"></i> Debts
+        </div>
+        <div class="nav-item" data-page="reports">
+            <i data-lucide="bar-chart-3"></i> Reports
+        </div>
+        <div class="nav-item" data-page="settings">
+            <i data-lucide="settings"></i> Settings
+        </div>
+        <div class="version">
+            <i data-lucide="shield-check"></i> v1.0 • Secure Local
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <section id="page-dashboard" class="page">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="header-controls">
+                    <select class="currency-selector" id="currency-select" onchange="updateCurrency()">
+                        <option value="USD">$ USD</option>
+                        <option value="EUR">€ EUR</option>
+                        <option value="GBP">£ GBP</option>
+                        <option value="INR" selected>₹ INR</option>
+                        <option value="NPR">रू NPR</option>
+                        <option value="JPY">¥ JPY</option>
+                        <option value="CNY">¥ CNY</option>
+                    </select>
+                    <div class="month-filter">
+                        <i data-lucide="calendar"></i>
+                        <select id="month-select" onchange="filterByMonth()">
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-grid" id="dashboard-stats"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i data-lucide="clock"></i> Recent Expenses</h2>
+                    <button class="btn btn-secondary" onclick="navigateTo('expenses')">
+                        <i data-lucide="arrow-right"></i> View All
+                    </button>
+                </div>
+                <table id="recent-expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Expenses Page -->
+        <section id="page-expenses" class="page hidden">
+            <div class="page-header">
+                <h1 class="page-title">Expenses</h1>
+                <div class="header-controls">
+                    <div class="month-filter">
+                        <i data-lucide="calendar"></i>
+                        <select id="expense-month-select" onchange="filterExpensesByMonth()">
+                            <option value="all">All Months</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <i data-lucide="download"></i> Export
+                    </button>
+                    <button class="btn btn-primary" onclick="openExpenseModal()">
+                        <i data-lucide="plus"></i> Add Expense
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <table id="expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Investments Page -->
+        <section id="page-investments" class="page hidden">
+            <div class="page-header">
+                <h1 class="page-title">Investments</h1>
+                <button class="btn btn-primary" onclick="openInvestmentModal()">
+                    <i data-lucide="plus"></i> Add Investment
+                </button>
+            </div>
+            <div class="stats-grid" id="investment-stats"></div>
+            <div class="card">
+                <table id="investments-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Debts Page -->
+        <section id="page-debts" class="page hidden">
+            <div class="page-header">
+                <h1 class="page-title">Debts & Loans</h1>
+                <button class="btn btn-primary" onclick="openDebtModal()">
+                    <i data-lucide="plus"></i> Add Debt
+                </button>
+            </div>
+            <div class="card">
+                <table id="debts-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Principal</th>
+                            <th>Remaining</th>
+                            <th>Interest</th>
+                            <th>Monthly</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Reports Page -->
+        <section id="page-reports" class="page hidden">
+            <div class="page-header">
+                <h1 class="page-title">Monthly Reports</h1>
+            </div>
+            <div class="card">
+                <table id="reports-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Salary</th>
+                            <th>Expenses</th>
+                            <th>Savings</th>
+                            <th>Rate</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Settings Page -->
+        <section id="page-settings" class="page hidden">
+            <div class="page-header">
+                <h1 class="page-title">Settings</h1>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:24px"><i data-lucide="sliders"></i> Configuration</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Monthly Salary</label>
+                        <input type="number" class="form-input" id="config-salary" value="100000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Base Investments</label>
+                        <input type="number" class="form-input" id="config-investments" value="200000">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveConfig()">
+                    <i data-lucide="save"></i> Save Configuration
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:24px"><i data-lucide="tag"></i> Categories</div>
+                <table id="categories-table">
+                    <thead>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i data-lucide="repeat"></i> Recurring Monthly Expenses</h2>
+                    <button class="btn btn-primary" onclick="openRecurringExpenseModal()">
+                        <i data-lucide="plus"></i> Add Recurring Expense
+                    </button>
+                </div>
+                <table id="recurring-expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Auto-Apply</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Expense Modal -->
+    <div class="modal-overlay" id="expense-modal">
+        <div class="modal">
+            <h3 class="modal-title">Add Expense</h3>
+            <form id="expense-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="expense-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-input" id="expense-amount" required min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="expense-category" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <input type="text" class="form-input" id="expense-notes" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('expense-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Investment Modal -->
+    <div class="modal-overlay" id="investment-modal">
+        <div class="modal">
+            <h3 class="modal-title">Add Investment</h3>
+            <form id="investment-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="investment-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-input" id="investment-amount" required min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" id="investment-type" required>
+                        <option value="deposit">Deposit</option>
+                        <option value="withdrawal">Withdrawal</option>
+                        <option value="dividend">Dividend</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" id="investment-desc" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('investment-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Debt Modal -->
+    <div class="modal-overlay" id="debt-modal">
+        <div class="modal">
+            <h3 class="modal-title">Add Debt</h3>
+            <form id="debt-form">
+                <div class="form-group">
+                    <label class="form-label">Debt Name</label>
+                    <input type="text" class="form-input" id="debt-name" required placeholder="e.g., Home Loan">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Principal</label>
+                        <input type="number" class="form-input" id="debt-principal" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Remaining</label>
+                        <input type="number" class="form-input" id="debt-remaining" required min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Interest Rate (%)</label>
+                        <input type="number" class="form-input" id="debt-interest" value="0" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monthly Payment</label>
+                        <input type="number" class="form-input" id="debt-monthly" value="0" min="0">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('debt-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal" style="max-width: 400px;">
+            <h3 class="modal-title" id="confirm-title">Confirm Action</h3>
+            <p id="confirm-message" style="color: var(--text-secondary); margin-bottom: 24px; font-size: 15px;"></p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recurring Expense Modal -->
+    <div class="modal-overlay" id="recurring-expense-modal">
+        <div class="modal">
+            <h3 class="modal-title">Add Recurring Monthly Expense</h3>
+            <form id="recurring-expense-form">
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="recurring-category" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Amount</label>
+                    <input type="number" class="form-input" id="recurring-amount" required min="0" step="0.01"
+                        placeholder="e.g., 1500">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="recurring-auto-apply" checked>
+                        <span>Automatically add this expense at the start of each month</span>
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('recurring-expense-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API = '';
+        let categories = [];
+        let dashboard = null;
+        let allExpenses = [];
+        let currentCurrency = { symbol: '₹', code: 'INR' };
+
+        const currencySymbols = {
+            'USD': '$', 'EUR': '€', 'GBP': '£', 'INR': '₹',
+            'NPR': 'रू', 'JPY': '¥', 'CNY': '¥'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadDashboard();
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => navigateTo(item.dataset.page));
+        });
+
+        function navigateTo(page) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
+            loadPageData(page);
+            lucide.createIcons();
+        }
+
+        async function loadPageData(page) {
+            switch (page) {
+                case 'dashboard': await loadDashboard(); break;
+                case 'expenses': await loadExpenses(); break;
+                case 'investments': await loadInvestments(); break;
+                case 'debts': await loadDebts(); break;
+                case 'reports': await loadReports(); break;
+                case 'settings': await loadSettings(); break;
+            }
+            lucide.createIcons();
+        }
+
+        function updateCurrency() {
+            const select = document.getElementById('currency-select');
+            currentCurrency.code = select.value;
+            currentCurrency.symbol = currencySymbols[select.value];
+            loadPageData(document.querySelector('.nav-item.active').dataset.page);
+        }
+
+        function populateMonthFilters(expenses = []) {
+            const monthSelect = document.getElementById('month-select');
+            const expenseMonthSelect = document.getElementById('expense-month-select');
+
+            // Clear existing options except "All"
+            monthSelect.innerHTML = '<option value="all">All Time</option>';
+            expenseMonthSelect.innerHTML = '<option value="all">All Months</option>';
+
+            if (!expenses || expenses.length === 0) return;
+
+            // Get unique months from expenses
+            const monthsMap = new Map();
+            expenses.forEach(expense => {
+                const d = new Date(expense.date);
+                const year = d.getFullYear();
+                const month = d.getMonth() + 1;
+                const key = `${year}-${String(month).padStart(2, '0')}`;
+                const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+                monthsMap.set(key, label);
+            });
+
+            // Sort months in descending order (newest first)
+            const sortedMonths = Array.from(monthsMap.entries()).sort((a, b) => {
+                return b[0].localeCompare(a[0]);
+            });
+
+            // Add sorted months to dropdowns
+            const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+            sortedMonths.forEach(([value, label], index) => {
+                const opt1 = new Option(label, value);
+                const opt2 = new Option(label, value);
+
+                // Select current month by default if it exists
+                if (value === currentMonth) {
+                    opt1.selected = true;
+                    opt2.selected = true;
+                } else if (index === 0 && !sortedMonths.find(m => m[0] === currentMonth)) {
+                    // If current month doesn't exist, select the first (most recent) month
+                    opt1.selected = true;
+                    opt2.selected = true;
+                }
+
+                monthSelect.add(opt1);
+                expenseMonthSelect.add(opt2);
+            });
+        }
+
+        function filterByMonth() {
+            loadDashboard();
+        }
+
+        function filterExpensesByMonth() {
+            loadExpenses();
+        }
+
+        // Auto-apply recurring expenses
+        async function autoApplyRecurringExpenses() {
+            const stored = localStorage.getItem('recurringExpenses');
+            if (!stored) return;
+
+            const recurringExpenses = JSON.parse(stored);
+            const autoApplyExpenses = recurringExpenses.filter(re => re.auto_apply);
+
+            if (autoApplyExpenses.length === 0) return;
+
+            // Get current month key
+            const now = new Date();
+            const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            // Check if we've already applied for this month
+            const lastApplied = localStorage.getItem('lastRecurringApplied');
+
+            if (lastApplied === currentMonthKey) {
+                return; // Already applied this month
+            }
+
+            // Get existing expenses to check for duplicates
+            const expensesRes = await fetch(`${API}/api/expenses`);
+            const existingExpenses = await expensesRes.json();
+
+            // Check if recurring expenses already exist for this month
+            const currentMonthExpenses = existingExpenses.filter(e => {
+                const expenseDate = new Date(e.date);
+                const expenseMonthKey = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+                return expenseMonthKey === currentMonthKey && e.is_fixed;
+            });
+
+            // If we already have fixed expenses this month, don't add more
+            if (currentMonthExpenses.length > 0) {
+                localStorage.setItem('lastRecurringApplied', currentMonthKey);
+                return;
+            }
+
+            // Apply all auto-apply recurring expenses
+            const firstDayOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+            for (const recurring of autoApplyExpenses) {
+                await fetch(`${API}/api/expenses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: firstDayOfMonth,
+                        amount: recurring.amount,
+                        category_id: recurring.category_id,
+                        is_fixed: true,
+                        notes: `Auto-recurring: ${recurring.category_name}`
+                    })
+                });
+            }
+
+            // Mark this month as applied
+            localStorage.setItem('lastRecurringApplied', currentMonthKey);
+
+            if (autoApplyExpenses.length > 0) {
+                showToast('Recurring Expenses Applied!', `${autoApplyExpenses.length} recurring expense(s) added for this month.`, 'success');
+            }
+        }
+
+        async function loadDashboard() {
+            await loadCategories();
+
+            // Auto-apply recurring expenses for the current month
+            await autoApplyRecurringExpenses();
+
+            const [dashRes, expensesRes] = await Promise.all([
+                fetch(`${API}/api/dashboard`),
+                fetch(`${API}/api/expenses`)
+            ]);
+            dashboard = await dashRes.json();
+            allExpenses = await expensesRes.json();
+
+            // Populate month filters with actual expense dates
+            populateMonthFilters(allExpenses);
+
+            const monthFilter = document.getElementById('month-select').value;
+            let filteredExpenses = allExpenses;
+
+            if (monthFilter !== 'all') {
+                filteredExpenses = allExpenses.filter(e => {
+                    const expenseDate = new Date(e.date);
+                    const [year, month] = monthFilter.split('-');
+                    return expenseDate.getFullYear() == year &&
+                        (expenseDate.getMonth() + 1) == parseInt(month);
+                });
+            }
+
+            // Calculate filtered stats
+            const totalFilteredExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const remainingBalance = dashboard.monthly_salary - totalFilteredExpenses;
+            const savingsRate = dashboard.monthly_salary > 0
+                ? Math.round((remainingBalance / dashboard.monthly_salary) * 100)
+                : 0;
+
+            let status = 'Poor';
+            if (savingsRate >= 40) status = 'Rich';
+            else if (savingsRate >= 15) status = 'Neutral';
+
+            const statusClass = `status-${status}`;
+            const c = currentCurrency.symbol;
+
+            document.getElementById('dashboard-stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="wallet"></i></div>
+                    <div class="stat-label">Monthly Salary</div>
+                    <div class="stat-value">${c}${formatNum(dashboard.monthly_salary)}</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon"><i data-lucide="credit-card"></i></div>
+                    <div class="stat-label">Total Expenses${monthFilter !== 'all' ? ' (Filtered)' : ''}</div>
+                    <div class="stat-value danger">${c}${formatNum(totalFilteredExpenses)}</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon"><i data-lucide="piggy-bank"></i></div>
+                    <div class="stat-label">Remaining Balance</div>
+                    <div class="stat-value ${remainingBalance >= 0 ? 'success' : 'danger'}">${c}${formatNum(remainingBalance)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="percent"></i></div>
+                    <div class="stat-label">Savings Rate${monthFilter !== 'all' ? ' (Filtered)' : ''}</div>
+                    <div class="stat-value">${savingsRate}% <span class="status-badge ${statusClass}">${status}</span></div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon"><i data-lucide="trending-up"></i></div>
+                    <div class="stat-label">Net Worth</div>
+                    <div class="stat-value success">${c}${formatNum(dashboard.net_worth)}</div>
+                </div>
+                <div class="stat-card ${dashboard.total_debts > 0 ? 'danger' : ''}">
+                    <div class="stat-icon"><i data-lucide="landmark"></i></div>
+                    <div class="stat-label">Total Debts</div>
+                    <div class="stat-value ${dashboard.total_debts > 0 ? 'danger' : ''}">${c}${formatNum(dashboard.total_debts)}</div>
+                </div>
+            `;
+
+            const recentExpenses = filteredExpenses.slice(0, 5);
+            const dashMonthFilter = document.getElementById('month-select').value;
+            const emptyMessage = dashMonthFilter !== 'all'
+                ? '<tr><td colspan="4" class="empty-state"><i data-lucide="calendar-x"></i><div>No expenses for selected month</div></td></tr>'
+                : '<tr><td colspan="4" class="empty-state"><i data-lucide="inbox"></i><div>No expenses yet</div></td></tr>';
+
+            document.querySelector('#recent-expenses-table tbody').innerHTML = recentExpenses.length ?
+                recentExpenses.map(e => `
+                    <tr>
+                        <td>${formatDate(e.date)}</td>
+                        <td><div style="display:flex;align-items:center;gap:10px"><div class="category-icon"><i data-lucide="${getCategoryIcon(e.category_name)}"></i></div>${e.category_name}</div></td>
+                        <td style="font-weight:600;color:var(--danger)">${c}${formatNum(e.amount)}</td>
+                        <td style="color:var(--text-muted)">${e.notes || '-'}</td>
+                    </tr>
+                `).join('') : emptyMessage;
+
+
+            lucide.createIcons();
+        }
+
+        async function loadExpenses() {
+            await loadCategories();
+            const res = await fetch(`${API}/api/expenses`);
+            allExpenses = await res.json();
+
+            // Update month filters with current expense data
+            populateMonthFilters(allExpenses);
+
+            const monthFilter = document.getElementById('expense-month-select').value;
+            let filteredExpenses = allExpenses;
+
+            if (monthFilter !== 'all') {
+                filteredExpenses = allExpenses.filter(e => {
+                    const expenseDate = new Date(e.date);
+                    const [year, month] = monthFilter.split('-');
+                    return expenseDate.getFullYear() == year &&
+                        (expenseDate.getMonth() + 1) == parseInt(month);
+                });
+            }
+
+            const c = currentCurrency.symbol;
+            const expMonthFilter = document.getElementById('expense-month-select').value;
+            const expEmptyMessage = expMonthFilter !== 'all'
+                ? '<tr><td colspan="5" class="empty-state"><i data-lucide="calendar-x"></i><div>No expenses for selected month</div></td></tr>'
+                : '<tr><td colspan="5" class="empty-state"><i data-lucide="inbox"></i><div>No expenses recorded</div></td></tr>';
+
+            document.querySelector('#expenses-table tbody').innerHTML = filteredExpenses.length ?
+                filteredExpenses.map(e => `
+                    <tr>
+                        <td>${formatDate(e.date)}</td>
+                        <td><div style="display:flex;align-items:center;gap:10px"><div class="category-icon"><i data-lucide="${getCategoryIcon(e.category_name)}"></i></div>${e.category_name}</div></td>
+                        <td style="font-weight:600;color:var(--danger)">${c}${formatNum(e.amount)}</td>
+                        <td style="color:var(--text-muted)">${e.notes || '-'}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="editExpense(${e.id})" style="margin-right:8px">
+                                <i data-lucide="edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteExpense(${e.id})">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('') : expEmptyMessage;
+            lucide.createIcons();
+        }
+
+        let editingExpenseId = null;
+
+        function openExpenseModal() {
+            editingExpenseId = null;
+            document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expense-amount').value = '';
+            document.getElementById('expense-notes').value = '';
+            document.getElementById('expense-category').innerHTML = categories.map(c =>
+                `<option value="${c.id}">${c.name}</option>`
+            ).join('');
+            document.querySelector('#expense-modal .modal-title').textContent = 'Add Expense';
+            document.getElementById('expense-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function editExpense(id) {
+            editingExpenseId = id;
+            const expense = allExpenses.find(e => e.id === id);
+            if (!expense) return;
+
+            document.getElementById('expense-date').value = expense.date;
+            document.getElementById('expense-amount').value = expense.amount;
+            document.getElementById('expense-notes').value = expense.notes || '';
+            document.getElementById('expense-category').innerHTML = categories.map(c =>
+                `<option value="${c.id}" ${c.id === expense.category_id ? 'selected' : ''}>${c.name}</option>`
+            ).join('');
+            document.querySelector('#expense-modal .modal-title').textContent = 'Edit Expense';
+            document.getElementById('expense-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        document.getElementById('expense-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const expenseData = {
+                date: document.getElementById('expense-date').value,
+                amount: parseFloat(document.getElementById('expense-amount').value),
+                category_id: parseInt(document.getElementById('expense-category').value),
+                is_fixed: false,
+                notes: document.getElementById('expense-notes').value || null
+            };
+
+            try {
+                if (editingExpenseId) {
+                    // Update existing expense
+                    const response = await fetch(`${API}/api/expenses/${editingExpenseId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(expenseData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to update expense: ${response.statusText}`);
+                    }
+
+                    showToast('Updated!', 'Expense has been updated successfully.', 'success');
+                } else {
+                    // Create new expense
+                    const response = await fetch(`${API}/api/expenses`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(expenseData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to create expense: ${response.statusText}`);
+                    }
+
+                    showToast('Expense Added!', 'Your expense has been recorded successfully.', 'success');
+                }
+
+                closeModal('expense-modal');
+                document.getElementById('expense-form').reset();
+                editingExpenseId = null;
+                await loadExpenses();
+                await loadDashboard();
+            } catch (error) {
+                console.error('Error saving expense:', error);
+                showToast('Error!', 'Failed to save expense. Please try again.', 'error');
+            }
+        });
+
+        function deleteExpense(id) {
+            showConfirm('Delete Expense', 'Are you sure you want to delete this expense? This action cannot be undone.', async () => {
+                await fetch(`${API}/api/expenses/${id}`, { method: 'DELETE' });
+                showToast('Deleted!', 'Expense has been removed.', 'success');
+                loadExpenses();
+            });
+        }
+
+        let editingInvestmentId = null;
+        let allInvestments = [];
+
+        async function loadInvestments() {
+            const res = await fetch(`${API}/api/investments`);
+            allInvestments = await res.json();
+            const c = currentCurrency.symbol;
+
+            const deposits = allInvestments.filter(i => i.type === 'deposit').reduce((s, i) => s + i.amount, 0);
+            const withdrawals = allInvestments.filter(i => i.type === 'withdrawal').reduce((s, i) => s + i.amount, 0);
+            const dividends = allInvestments.filter(i => i.type === 'dividend').reduce((s, i) => s + i.amount, 0);
+
+            document.getElementById('investment-stats').innerHTML = `
+                <div class="stat-card success">
+                    <div class="stat-icon"><i data-lucide="arrow-up-circle"></i></div>
+                    <div class="stat-label">Total Deposits</div>
+                    <div class="stat-value success">${c}${formatNum(deposits)}</div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon"><i data-lucide="arrow-down-circle"></i></div>
+                    <div class="stat-label">Total Withdrawals</div>
+                    <div class="stat-value danger">${c}${formatNum(withdrawals)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="coins"></i></div>
+                    <div class="stat-label">Total Dividends</div>
+                    <div class="stat-value">${c}${formatNum(dividends)}</div>
+                </div>
+            `;
+
+            document.querySelector('#investments-table tbody').innerHTML = allInvestments.length ?
+                allInvestments.map(i => `
+                    <tr>
+                        <td>${formatDate(i.date)}</td>
+                        <td style="text-transform:capitalize">${i.type}</td>
+                        <td style="font-weight:600;color:var(--${i.type === 'withdrawal' ? 'danger' : 'success'})">${c}${formatNum(i.amount)}</td>
+                        <td style="color:var(--text-muted)">${i.description || '-'}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="editInvestment(${i.id})" style="margin-right:8px">
+                                <i data-lucide="edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteInvestment(${i.id})">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('') :
+                '<tr><td colspan="5" class="empty-state"><i data-lucide="trending-up"></i><div>No investments recorded</div></td></tr>';
+            lucide.createIcons();
+        }
+
+        function openInvestmentModal() {
+            editingInvestmentId = null;
+            document.getElementById('investment-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('investment-amount').value = '';
+            document.getElementById('investment-desc').value = '';
+            document.getElementById('investment-type').value = 'deposit';
+            document.querySelector('#investment-modal .modal-title').textContent = 'Add Investment';
+            document.getElementById('investment-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function editInvestment(id) {
+            editingInvestmentId = id;
+            const investment = allInvestments.find(i => i.id === id);
+            if (!investment) return;
+
+            document.getElementById('investment-date').value = investment.date;
+            document.getElementById('investment-amount').value = investment.amount;
+            document.getElementById('investment-desc').value = investment.description || '';
+            document.getElementById('investment-type').value = investment.type;
+            document.querySelector('#investment-modal .modal-title').textContent = 'Edit Investment';
+            document.getElementById('investment-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        document.getElementById('investment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const investmentData = {
+                date: document.getElementById('investment-date').value,
+                amount: parseFloat(document.getElementById('investment-amount').value),
+                type: document.getElementById('investment-type').value,
+                description: document.getElementById('investment-desc').value || null
+            };
+
+            try {
+                if (editingInvestmentId) {
+                    const response = await fetch(`${API}/api/investments/${editingInvestmentId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(investmentData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to update investment: ${response.statusText}`);
+                    }
+
+                    showToast('Updated!', 'Investment has been updated successfully.', 'success');
+                } else {
+                    const response = await fetch(`${API}/api/investments`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(investmentData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to create investment: ${response.statusText}`);
+                    }
+
+                    showToast('Investment Added!', 'Your investment has been recorded successfully.', 'success');
+                }
+
+                closeModal('investment-modal');
+                document.getElementById('investment-form').reset();
+                editingInvestmentId = null;
+                await loadInvestments();
+            } catch (error) {
+                console.error('Error saving investment:', error);
+                showToast('Error!', 'Failed to save investment. Please try again.', 'error');
+            }
+        });
+
+
+        function deleteInvestment(id) {
+            showConfirm('Delete Investment', 'Are you sure you want to delete this investment record? This action cannot be undone.', async () => {
+                await fetch(`${API}/api/investments/${id}`, { method: 'DELETE' });
+                showToast('Deleted!', 'Investment record has been removed.', 'success');
+                loadInvestments();
+            });
+        }
+
+        let editingDebtId = null;
+        let allDebts = [];
+
+        async function loadDebts() {
+            const res = await fetch(`${API}/api/debts`);
+            allDebts = await res.json();
+            const c = currentCurrency.symbol;
+
+            document.querySelector('#debts-table tbody').innerHTML = allDebts.length ?
+                allDebts.map(d => `
+                    <tr>
+                        <td style="font-weight:500">${d.name}</td>
+                        <td>${c}${formatNum(d.principal)}</td>
+                        <td style="color:var(--danger);font-weight:600">${c}${formatNum(d.remaining)}</td>
+                        <td>${d.interest_rate}%</td>
+                        <td>${c}${formatNum(d.monthly_payment)}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="editDebt(${d.id})" style="margin-right:8px">
+                                <i data-lucide="edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDebt(${d.id})">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('') :
+                '<tr><td colspan="6" class="empty-state"><i data-lucide="check-circle"></i><div>No debts - Great!</div></td></tr>';
+            lucide.createIcons();
+        }
+
+        function openDebtModal() {
+            editingDebtId = null;
+            document.getElementById('debt-name').value = '';
+            document.getElementById('debt-principal').value = '';
+            document.getElementById('debt-remaining').value = '';
+            document.getElementById('debt-interest').value = '';
+            document.getElementById('debt-monthly').value = '';
+            document.querySelector('#debt-modal .modal-title').textContent = 'Add Debt';
+            document.getElementById('debt-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function editDebt(id) {
+            editingDebtId = id;
+            const debt = allDebts.find(d => d.id === id);
+            if (!debt) return;
+
+            document.getElementById('debt-name').value = debt.name;
+            document.getElementById('debt-principal').value = debt.principal;
+            document.getElementById('debt-remaining').value = debt.remaining;
+            document.getElementById('debt-interest').value = debt.interest_rate;
+            document.getElementById('debt-monthly').value = debt.monthly_payment;
+            document.querySelector('#debt-modal .modal-title').textContent = 'Edit Debt';
+            document.getElementById('debt-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        document.getElementById('debt-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const debtData = {
+                name: document.getElementById('debt-name').value,
+                principal: parseFloat(document.getElementById('debt-principal').value),
+                remaining: parseFloat(document.getElementById('debt-remaining').value),
+                interest_rate: parseFloat(document.getElementById('debt-interest').value) || 0,
+                monthly_payment: parseFloat(document.getElementById('debt-monthly').value) || 0
+            };
+
+            try {
+                if (editingDebtId) {
+                    const response = await fetch(`${API}/api/debts/${editingDebtId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(debtData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to update debt: ${response.statusText}`);
+                    }
+
+                    showToast('Updated!', 'Debt has been updated successfully.', 'success');
+                } else {
+                    const response = await fetch(`${API}/api/debts`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(debtData)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to create debt: ${response.statusText}`);
+                    }
+
+                    showToast('Debt Added!', 'Your debt has been recorded successfully.', 'success');
+                }
+
+                closeModal('debt-modal');
+                document.getElementById('debt-form').reset();
+                editingDebtId = null;
+                await loadDebts();
+            } catch (error) {
+                console.error('Error saving debt:', error);
+                showToast('Error!', 'Failed to save debt. Please try again.', 'error');
+            }
+        });
+
+        function deleteDebt(id) {
+            showConfirm('Delete Debt', 'Are you sure you want to delete this debt record? This action cannot be undone.', async () => {
+                await fetch(`${API}/api/debts/${id}`, { method: 'DELETE' });
+                showToast('Deleted!', 'Debt record has been removed.', 'success');
+                loadDebts();
+            });
+        }
+
+        async function loadReports() {
+            const res = await fetch(`${API}/api/reports/monthly`);
+            const reports = await res.json();
+            const c = currentCurrency.symbol;
+
+            document.querySelector('#reports-table tbody').innerHTML = reports.length ?
+                reports.map(r => `
+                    <tr>
+                        <td style="font-weight:500">${r.month_name} ${r.year}</td>
+                        <td>${c}${formatNum(r.salary)}</td>
+                        <td style="color:var(--danger)">${c}${formatNum(r.total_expenses)}</td>
+                        <td style="color:${r.savings >= 0 ? 'var(--success)' : 'var(--danger)'}">${c}${formatNum(r.savings)}</td>
+                        <td>${r.savings_rate}%</td>
+                        <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+                    </tr>
+                `).join('') :
+                '<tr><td colspan="6" class="empty-state"><i data-lucide="file-text"></i><div>No reports yet</div></td></tr>';
+            lucide.createIcons();
+        }
+
+        async function loadSettings() {
+            await loadCategories();
+            const res = await fetch(`${API}/api/config`);
+            const configs = await res.json();
+            const salaryConfig = configs.find(c => c.key === 'monthly_salary');
+            const invConfig = configs.find(c => c.key === 'base_investments');
+            if (salaryConfig) document.getElementById('config-salary').value = salaryConfig.value;
+            if (invConfig) document.getElementById('config-investments').value = invConfig.value;
+
+            document.querySelector('#categories-table tbody').innerHTML = categories.map(c => `
+                <tr>
+                    <td><div class="category-icon"><i data-lucide="${c.icon}"></i></div></td>
+                    <td>${c.name}</td>
+                </tr>
+            `).join('');
+
+            loadRecurringExpenses();
+            lucide.createIcons();
+        }
+
+        async function saveConfig() {
+            const salary = parseFloat(document.getElementById('config-salary').value);
+            const investments = parseFloat(document.getElementById('config-investments').value);
+            await Promise.all([
+                fetch(`${API}/api/config/monthly_salary`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: salary })
+                }),
+                fetch(`${API}/api/config/base_investments`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: investments })
+                })
+            ]);
+            showToast('Configuration saved!', 'Your settings have been updated successfully.', 'success');
+        }
+
+        // Recurring Expenses Management
+        let recurringExpenses = [];
+
+        async function loadRecurringExpenses() {
+            // Load from localStorage
+            const stored = localStorage.getItem('recurringExpenses');
+            recurringExpenses = stored ? JSON.parse(stored) : [];
+
+            const c = currentCurrency.symbol;
+            document.querySelector('#recurring-expenses-table tbody').innerHTML = recurringExpenses.length ?
+                recurringExpenses.map(re => `
+                    <tr>
+                        <td><div style="display:flex;align-items:center;gap:10px"><div class="category-icon"><i data-lucide="${getCategoryIcon(re.category_name)}"></i></div>${re.category_name}</div></td>
+                        <td style="font-weight:600;color:var(--accent-orange)">${c}${formatNum(re.amount)}</td>
+                        <td><span class="status-badge ${re.auto_apply ? 'status-Rich' : 'status-Neutral'}">${re.auto_apply ? 'Auto' : 'Manual'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" onclick="applyRecurringExpense(${re.id})" style="margin-right:8px">
+                                <i data-lucide="plus"></i> Apply Now
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRecurringExpense(${re.id})">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('') :
+                '<tr><td colspan="4" class="empty-state"><i data-lucide="repeat"></i><div>No recurring expenses set up</div></td></tr>';
+            lucide.createIcons();
+        }
+
+        function openRecurringExpenseModal() {
+            document.getElementById('recurring-category').innerHTML = categories.map(c =>
+                `<option value="${c.id}">${c.name}</option>`
+            ).join('');
+            document.getElementById('recurring-expense-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        document.getElementById('recurring-expense-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const categoryId = parseInt(document.getElementById('recurring-category').value);
+            const selectedCategory = categories.find(c => c.id === categoryId);
+
+            const newRecurring = {
+                id: Date.now(),
+                category_id: categoryId,
+                category_name: selectedCategory.name,
+                amount: parseFloat(document.getElementById('recurring-amount').value),
+                auto_apply: document.getElementById('recurring-auto-apply').checked
+            };
+
+            recurringExpenses.push(newRecurring);
+            localStorage.setItem('recurringExpenses', JSON.stringify(recurringExpenses));
+
+            closeModal('recurring-expense-modal');
+            document.getElementById('recurring-expense-form').reset();
+            showToast('Recurring Expense Added!', `${selectedCategory.name} will be tracked as a monthly expense.`, 'success');
+            loadRecurringExpenses();
+        });
+
+        async function applyRecurringExpense(id) {
+            const recurring = recurringExpenses.find(re => re.id === id);
+            if (!recurring) return;
+
+            // Add as today's expense
+            await fetch(`${API} / api / expenses`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: new Date().toISOString().split('T')[0],
+                    amount: recurring.amount,
+                    category_id: recurring.category_id,
+                    is_fixed: true,
+                    notes: `Recurring: ${recurring.category_name}`
+                })
+            });
+
+            showToast('Applied!', `Added ${recurring.category_name} expense for this month.`, 'success');
+            loadDashboard();
+            loadExpenses();
+        }
+
+        function deleteRecurringExpense(id) {
+            showConfirm('Delete Recurring Expense', 'Are you sure you want to remove this recurring expense? It won\'t affect past expenses.', () => {
+                recurringExpenses = recurringExpenses.filter(re => re.id !== id);
+                localStorage.setItem('recurringExpenses', JSON.stringify(recurringExpenses));
+                showToast('Deleted!', 'Recurring expense has been removed.', 'success');
+                loadRecurringExpenses();
+            });
+        }
+
+        // Toast Notification System
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icons = {
+                success: 'check-circle',
+                error: 'alert-circle',
+                info: 'info'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i data-lucide="${icons[type] || 'info'}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i data-lucide="x"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Confirmation Dialog
+        function showConfirm(title, message, onConfirm) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = message;
+
+            const confirmBtn = document.getElementById('confirm-btn');
+            const modal = document.getElementById('confirm-modal');
+
+            // Remove old event listeners by cloning
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            newConfirmBtn.addEventListener('click', async () => {
+                closeModal('confirm-modal');
+                await onConfirm();
+            });
+
+            modal.classList.add('active');
+            lucide.createIcons();
+        }
+
+
+        async function loadCategories() {
+            if (categories.length) return;
+            const res = await fetch(`${API} /api/categories`);
+            categories = await res.json();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function formatNum(n) {
+            return n.toLocaleString('en-IN');
+        }
+
+        function formatDate(d) {
+            return new Date(d).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function getCategoryIcon(name) {
+            const icons = {
+                'Rent': 'home', 'Utilities': 'zap', 'Gym': 'dumbbell', 'Groceries': 'shopping-cart',
+                'Family': 'users', 'Loan': 'landmark', 'Food': 'utensils', 'Transport': 'car',
+                'Entertainment': 'film', 'Shopping': 'shopping-bag', 'Healthcare': 'heart-pulse', 'Other': 'package'
+            };
+            return icons[name] || 'circle';
+        }
+
+        async function exportData() {
+            window.open(`${API} /api/export`, '_blank');
+        }
+    </script>
+</body>
+
+</html>
