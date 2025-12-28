@@ -12,7 +12,7 @@ function createWindow() {
         height: 900,
         minWidth: 1100,
         minHeight: 700,
-        title: 'SoloWealth - Personal Finance Tracker',
+        title: 'Addy Wealth - Personal Finance Tracker',
         icon: path.join(__dirname, 'icon.ico'),
         webPreferences: {
             nodeIntegration: false,
@@ -91,9 +91,40 @@ function startPythonServer() {
             return;
         }
     } else {
-        // Production: Use bundled executable
-        backendPath = path.join(process.resourcesPath, 'resources', 'SoloWealth-Backend.exe');
-        console.log('Production mode - using bundled backend at:', backendPath);
+        // Production: Search for backend in multiple locations
+        const possiblePaths = [
+            // Sibling to executable (Root level) - Priority 1
+            path.join(path.dirname(process.execPath), 'SoloWealth-Backend.exe'),
+            // Standard Electron resources path
+            path.join(process.resourcesPath, 'resources', 'SoloWealth-Backend.exe'),
+            // Sibling to executable (common in unpacked)
+            path.join(path.dirname(process.execPath), 'resources', 'SoloWealth-Backend.exe'),
+            // Root of resources
+            path.join(process.resourcesPath, 'SoloWealth-Backend.exe'),
+            // Up one level from resources (sometimes flat)
+            path.join(process.resourcesPath, '..', 'resources', 'SoloWealth-Backend.exe')
+        ];
+
+        backendPath = possiblePaths.find(p => require('fs').existsSync(p));
+
+        if (!backendPath) {
+            // Debugging: Show where we looked AND what is in the folders
+            let fileList = "Unable to read directory";
+            try {
+                const resourcesDir = path.join(path.dirname(process.execPath), 'resources');
+                const files = require('fs').readdirSync(resourcesDir);
+                fileList = `Contents of ${resourcesDir}:\n${files.join('\n')}`;
+            } catch (e) {
+                fileList = `Error reading dir: ${e.message}`;
+            }
+
+            const debugMsg = `Looked in:\n${possiblePaths.join('\n')}\n\n${fileList}`;
+            dialog.showErrorBox('Backend Not Found - File Search', debugMsg);
+            app.quit();
+            return;
+        }
+
+        console.log('Found backend at:', backendPath);
     }
 
     // Launch the backend executable

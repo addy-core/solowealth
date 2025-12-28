@@ -1,14 +1,14 @@
 {
-    "name": "solowealth",
+    "name": "addy-wealth",
     "version": "1.0.0",
     "description": "Local-only Personal Finance Tracker - Zero external APIs",
     "main": "electron/main.js",
     "scripts": {
         "start": "electron .",
         "build": "electron-builder",
-        "build:win": "electron-packager . SoloWealth --platform=win32 --arch=x64 --out=electron-dist --overwrite --ignore=^/dist --ignore=^/build --ignore=^/.git"
+        "build:win": "electron-packager . AddyWealth --platform=win32 --arch=x64 --out=electron-dist --overwrite --ignore=^/dist --ignore=^/build --ignore=^/.git"
     },
-    "author": "SoloWealth",
+    "author": "Addy Wealth",
     "license": "MIT",
     "devDependencies": {
         "electron": "^28.0.0",
@@ -16,8 +16,8 @@
         "electron-packager": "^17.1.2"
     },
     "build": {
-        "appId": "com.solowealth.app",
-        "productName": "SoloWealth",
+        "appId": "com.addywealth.app",
+        "productName": "Addy Wealth",
         "directories": {
             "output": "electron-dist"
         },
